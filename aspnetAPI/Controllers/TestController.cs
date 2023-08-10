@@ -1,4 +1,4 @@
-﻿using aspnetAPI.Models;
+﻿using aspnetAPI.Services.TestService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,50 +8,54 @@ namespace aspnetAPI.Controllers
     [ApiController]
     public class TestController : ControllerBase
     {
-        private static List<Test> tests = new List<Test>
+        private readonly ITestService _testService;
+
+        public TestController(ITestService testService)
         {
-            new Test
-            {
-                Id=1,
-                Name="SpiderMan",
-                Place = "New York"
-            },
-            new Test
-            {
-                Id=2,
-                Name="Iron Man",
-                Place = "Virginia"
-            },
-            new Test
-            {
-                Id=3,
-                Name="Superman",
-                Place = "Texas"
-            },
-        };
+            _testService = testService;
+        }
 
         [HttpGet]
         public async Task<ActionResult<List<Test>>> GetAllTest()
         {
-            return Ok(tests);
+            var result = _testService.GetAllTest();
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<List<Test>>> GetSingleTest(int id)
+        public async Task<ActionResult<Test>> GetSingleTest(int id)
         {
-            var test = tests.Find(y => y.Id == id);
-            if(test is null)
-            {
+            var result = _testService.GetSingleTest(id);
+            if(result is null)
                 return NotFound("Sorry!!, " +id+ " is not found.");
-            }
-            return Ok(test);
+
+            return Ok(result);
         }
 
         [HttpPost("addTest")]
-        public async Task<ActionResult<List<Test>>> AddTest([FromBody] Test test)
+        public async Task<ActionResult<List<Test>>> AddTest(Test test)
         {
-            tests.Add(test);
-            return Ok(tests);
+            var addTest = _testService.AddTest(test);
+            return Ok(addTest);
+        }
+
+        [HttpPut("editTest/{id}")]
+        public async Task<ActionResult<List<Test>>> EditTest(Test request, int id)
+        {
+            var update = _testService.EditTest(request, id);
+            if (update is null)
+                return NotFound("Sorry!, " + id + " is not found.");
+
+            return Ok(update);
+        }
+
+        [HttpDelete("deleteTest/{id}")]
+        public async Task<ActionResult<List<Test>>> DeleteTest(int id)
+        {
+            var result = _testService.DeleteTest(id);
+            if (result is null)
+                return NotFound("Sorry!, " + id + " is not found");
+            return Ok(result);
         }
     }
 }
