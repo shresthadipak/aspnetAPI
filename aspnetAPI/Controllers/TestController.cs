@@ -48,9 +48,33 @@ namespace aspnetAPI.Controllers
         }
 
         [HttpPost("addTest")]
-        public async Task<ActionResult<List<Test>>> AddTest([FromBody] Test test)
+        public async Task<ActionResult<List<Test>>> AddTest(Test test)
         {
             tests.Add(test);
+            return Ok(tests);
+        }
+
+        [HttpPut("editTest/{id}")]
+        public async Task<ActionResult<List<Test>>> EditTest(Test request, int id)
+        {
+            var test = tests.Find(x => x.Id == id);
+            if (test is null)
+                return NotFound("Sorry!!, " + id + " is not found.");
+
+            test.Name = request.Name;
+            test.Place = request.Place;
+
+            return Ok(tests);
+        }
+
+        [HttpDelete("deleteTest/{id}")]
+        public async Task<ActionResult<List<Test>>> DeleteTest(int id)
+        {
+            var test = tests.Find(x => x.Id == id);
+            if (test is null)
+                return NotFound("Sorry!!, " + id + " is not found.");
+
+            tests.Remove(test);
             return Ok(tests);
         }
     }
