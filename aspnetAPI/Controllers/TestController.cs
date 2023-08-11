@@ -18,14 +18,14 @@ namespace aspnetAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Test>>> GetAllTest()
         {
-            var result = _testService.GetAllTest();
+            var result = await _testService.GetAllTest();
             return Ok(result);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Test>> GetSingleTest(int id)
         {
-            var result = _testService.GetSingleTest(id);
+            var result = await _testService.GetSingleTest(id);
             if(result is null)
                 return NotFound("Sorry!!, " +id+ " is not found.");
 
@@ -35,14 +35,14 @@ namespace aspnetAPI.Controllers
         [HttpPost("addTest")]
         public async Task<ActionResult<List<Test>>> AddTest(Test test)
         {
-            var addTest = _testService.AddTest(test);
+            var addTest = await _testService.AddTest(test);
             return Ok(addTest);
         }
 
         [HttpPut("editTest/{id}")]
         public async Task<ActionResult<List<Test>>> EditTest(Test request, int id)
         {
-            var update = _testService.EditTest(request, id);
+            var update = await _testService.EditTest(request, id);
             if (update is null)
                 return NotFound("Sorry!, " + id + " is not found.");
 
@@ -52,7 +52,7 @@ namespace aspnetAPI.Controllers
         [HttpDelete("deleteTest/{id}")]
         public async Task<ActionResult<List<Test>>> DeleteTest(int id)
         {
-            var result = _testService.DeleteTest(id);
+            var result = await _testService.DeleteTest(id);
             if (result is null)
                 return NotFound("Sorry!, " + id + " is not found");
             return Ok(result);

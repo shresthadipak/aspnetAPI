@@ -2,14 +2,14 @@
 {
     public interface ITestService
     {
-        List<Test> GetAllTest();
+        Task<List<Test>> GetAllTest();
 
-        Test GetSingleTest(int id);
+        Task<Test> GetSingleTest(int id);
 
-        List<Test> AddTest(Test test);
+        Task<Test> AddTest(Test test);
 
-        List<Test> EditTest(Test request, int id);
+        Task<Test> EditTest(Test request, int id);
 
-        List<Test> DeleteTest(int id);
+        Task<Test> DeleteTest(int id);
     }
 }

@@ -4,64 +4,55 @@ namespace aspnetAPI.Services.TestService
 {
     public class TestService : ITestService
     {
-        private static List<Test> tests = new List<Test>
-        {
-            new Test
-            {
-                Id=1,
-                Name="SpiderMan",
-                Place = "New York"
-            },
-            new Test
-            {
-                Id=2,
-                Name="Iron Man",
-                Place = "Virginia"
-            },
-            new Test
-            {
-                Id=3,
-                Name="Superman",
-                Place = "Texas"
-            },
-        };
+        
+        private readonly DataContext _context;
 
-        public List<Test> AddTest(Test test)
+        public TestService(DataContext context)
         {
-            tests.Add(test);
-            return tests;
+            _context = context;
         }
 
-        public List<Test>? DeleteTest(int id)
+        public  async Task<Test> AddTest(Test test)
         {
-            var test = tests.Find(x => x.Id == id);
+            var addTest = _context.Tests.Add(test);
+            await _context.SaveChangesAsync();
+            return addTest.Entity;
+        }
+
+        public async Task<Test?> DeleteTest(int id)
+        {
+            var test = await _context.Tests.FindAsync(id);
             if (test is null)
                 return null;
 
-            tests.Remove(test);
-            return tests;
+            _context.Tests.Remove(test);
+            await _context.SaveChangesAsync();
+            return test;
         }
 
-        public List<Test>? EditTest(Test request, int id)
+        public async Task<Test?> EditTest(Test request, int id)
         {
-            var test = tests.Find(x => x.Id == id);
+            var test = await _context.Tests.FindAsync(id);
             if (test is null)
                 return null;
 
             test.Name = request.Name;
             test.Place = request.Place;
 
+            await _context.SaveChangesAsync();
+
+            return test;
+        }
+
+        public async Task<List<Test>> GetAllTest()
+        {
+            var tests = await _context.Tests.ToListAsync();
             return tests;
         }
 
-        public List<Test> GetAllTest()
+        public async Task<Test?> GetSingleTest(int id)
         {
-            return tests;
-        }
-
-        public Test? GetSingleTest(int id)
-        {
-            var test = tests.Find(y => y.Id == id);
+            var test = await _context.Tests.FindAsync(id);
             if (test is null)
                 return null;
             return test;

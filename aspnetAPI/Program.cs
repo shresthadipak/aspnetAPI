@@ -1,4 +1,5 @@
 global using aspnetAPI.Models;
+global using aspnetAPI.Data;
 using aspnetAPI.Services.TestService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped< ITestService, TestService>();
+builder.Services.AddDbContext<DataContext>();
 
 var app = builder.Build();
 
