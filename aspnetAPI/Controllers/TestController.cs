@@ -1,4 +1,5 @@
 ﻿using aspnetAPI.Services.TestService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +16,7 @@ namespace aspnetAPI.Controllers
             _testService = testService;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin, User")]
         public async Task<ActionResult<List<Test>>> GetAllTest()
         {
             var result = await _testService.GetAllTest();
